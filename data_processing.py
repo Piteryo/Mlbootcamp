@@ -76,10 +76,10 @@ def sortByDate(df, validateSet=False):
     return df
 
 def process_submission_data(classifier_pipeline):
-    subs_csi_1 = pd.read_csv('test/subs_csi_test.csv', index_col='SK_ID')
+    subs_csi_1 = pd.read_csv('home/spolezhaev/test/subs_csi_test.csv', index_col='SK_ID')
 
-    subs_features_1 = pd.read_csv('test/subs_features_test.csv', index_col='SK_ID')
-    subs_bs_consumption1 = pd.read_csv('test/subs_bs_consumption_test.csv')
+    subs_features_1 = pd.read_csv('home/spolezhaev/test/subs_features_test.csv', index_col='SK_ID')
+    subs_bs_consumption1 = pd.read_csv('home/spolezhaev/test/subs_bs_consumption_test.csv')
 
     df1 = subs_csi_1.merge(subs_features_1, on="SK_ID")
 
@@ -91,9 +91,9 @@ def process_submission_data(classifier_pipeline):
     return X_submission, classifier_pipeline.fit_transform(X_submission)
 
 def process_data():
-    subs_csi = pd.read_csv('train/subs_csi_train.csv', index_col='SK_ID')
-    subs_features = pd.read_csv('train/subs_features_train.csv', index_col='SK_ID')
-    subs_bs_consumption = pd.read_csv('train/subs_bs_consumption_train.csv')
+    subs_csi = pd.read_csv('home/spolezhaev/train/subs_csi_train.csv', index_col='SK_ID')
+    subs_features = pd.read_csv('home/spolezhaev/train/subs_features_train.csv', index_col='SK_ID')
+    subs_bs_consumption = pd.read_csv('home/spolezhaev/train/subs_bs_consumption_train.csv')
 
     df = subs_csi.merge(subs_features, on="SK_ID")
     df = df.merge(subs_bs_consumption.groupby(by=["SK_ID", "MON"], as_index=False).sum().set_index('SK_ID'), on='SK_ID')
@@ -117,9 +117,6 @@ def process_data():
     categorical_features = list(set(X).intersection(categorical_features))
     numerical_features = list(set(X).intersection(numerical_features))
     binary_features = list(set(X).intersection(binary_features))
-    categorical_indices = np.where(X.dtypes == 'category')
-
-    X[categorical_features].head()
 
     classifier_pipeline = Pipeline(steps=[
         ('feature_processing', ColumnTransformer(transformers=[
