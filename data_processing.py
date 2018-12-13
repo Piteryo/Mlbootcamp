@@ -16,6 +16,7 @@ from sklearn.preprocessing import PolynomialFeatures
 from sklearn.preprocessing import QuantileTransformer, FunctionTransformer
 from sklearn.preprocessing import RobustScaler
 
+import os
 
 def reduce_mem_usage(df):
     """ iterate through all the columns of a dataframe and modify the data type
@@ -75,11 +76,12 @@ def sortByDate(df, validateSet=False):
         df = df.groupby(by="SK_ID", group_keys=False).apply(lambda grp: grp.nlargest(1, 'SNAP_DATE'))
     return df
 
-def process_submission_data(classifier_pipeline):
-    subs_csi_1 = pd.read_csv('/home/spolezhaev/test/subs_csi_test.csv', index_col='SK_ID')
 
-    subs_features_1 = pd.read_csv('/home/spolezhaev/test/subs_features_test.csv', index_col='SK_ID')
-    subs_bs_consumption1 = pd.read_csv('/home/spolezhaev/test/subs_bs_consumption_test.csv')
+def process_submission_data(classifier_pipeline, testPath="."):
+    subs_csi_1 = pd.read_csv(os.path.join(testPath, 'subs_csi_test.csv'), index_col='SK_ID')
+
+    subs_features_1 = pd.read_csv(os.path.join(testPath, 'subs_features_test.csv'), index_col='SK_ID')
+    subs_bs_consumption1 = pd.read_csv(os.path.join(testPath, 'subs_bs_consumption_test.csv'))
 
     df1 = subs_csi_1.merge(subs_features_1, on="SK_ID")
 
@@ -90,10 +92,10 @@ def process_submission_data(classifier_pipeline):
     X_submission = df1.drop(columns=["SNAP_DATE", "CONTACT_DATE", 'COM_CAT#24'])
     return X_submission, classifier_pipeline.fit_transform(X_submission)
 
-def process_data():
-    subs_csi = pd.read_csv('/home/spolezhaev/train/subs_csi_train.csv', index_col='SK_ID')
-    subs_features = pd.read_csv('/home/spolezhaev/train/subs_features_train.csv', index_col='SK_ID')
-    subs_bs_consumption = pd.read_csv('/home/spolezhaev/train/subs_bs_consumption_train.csv')
+def process_data(trainPath=".", testPath="."):
+    subs_csi = pd.read_csv(os.path.join(trainPath, 'subs_csi_train.csv'), index_col='SK_ID')
+    subs_features = pd.read_csv(os.path.join(trainPath, 'subs_features_train.csv'), index_col='SK_ID')
+    subs_bs_consumption = pd.read_csv(os.path.join(trainPath, 'subs_bs_consumption_train.csv'))
 
     df = subs_csi.merge(subs_features, on="SK_ID")
     df = df.merge(subs_bs_consumption.groupby(by=["SK_ID", "MON"], as_index=False).sum().set_index('SK_ID'), on='SK_ID')
@@ -146,7 +148,7 @@ def process_data():
     X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
     X_train = classifier_pipeline.fit_transform(X_train)
     X_test = classifier_pipeline.fit_transform(X_test)
-    X_submission_df, X_submission = process_submission_data(classifier_pipeline)
+    X_submission_df, X_submission = process_submission_data(classifier_pipeline, testPath)
     return X_train, X_test, y_train, y_test, X_submission_df, X_submission
 
 
