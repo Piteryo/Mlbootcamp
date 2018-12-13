@@ -24,5 +24,5 @@ class PredictionModel:
 
         X_submission_df = X_submission_df.values
 
-        np.savetxt(os.path.join(submission_path, "submission" + iter + ".csv"), X_submission_df.T[0], delimiter="\n")
-        print("Saved to submission" + iter + ".csv")
+        np.savetxt(os.path.join(submission_path, "submission" + str(iter) + ".csv"), X_submission_df.T[0], delimiter="\n")
+        print("Saved to submission" + str(iter) + ".csv")
