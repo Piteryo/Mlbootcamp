@@ -1,6 +1,9 @@
 from data_processing import process_data
 from LogisticRegression import LogisticRegressionPredictor
 from CatboostPredictor import CatboostPredictor
+from LightGbmPredictor import LightGbmPredictor
+
+import lightgbm
 
 import argparse
 
@@ -17,7 +20,14 @@ models = {'CatBoost Classifier': CatboostPredictor(
                   "od_pval": 1e-5
               }
           ),
-          'Logistic Regression': LogisticRegressionPredictor({'class_weight': 'balanced'})}
+          'Logistic Regression': LogisticRegressionPredictor({'class_weight': 'balanced'}),
+          'LightGBM': LightGbmPredictor({
+              'objective': 'binary',
+              'random_state': 888,
+              'n_estimators': 500,
+              'learning_rate': 0.01,
+              'num_leaves': 124,
+              'colsample_bytree': 0.996})}
 
 def main(trainPath, testPath, submissionPath, processData=True, X_train=None, X_test=None, y_train=None, y_test=None, X_submission_df=None, X_submission=None):
     max_score = 0
