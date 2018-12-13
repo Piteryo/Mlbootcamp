@@ -14,7 +14,7 @@ class TestA(object):
         """This method is run once for each class _after_ all tests are run"""
 
     def setUp(self):
-        self.X_train, self.X_test, self.y_train, self.y_test, self.X_submission_df, self.X_submission = process_data("train", "test")
+        self.X_train, self.X_test, self.y_train, self.y_test, self.X_submission_df, self.X_submission = process_data("/home/spolezhaev/train", "/home/spolezhaev/test")
 
 
     def teardown(self):
